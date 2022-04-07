@@ -13,6 +13,14 @@ const routes: VueRouter.RouteRecordRaw[] = [
   {
     path: "/game",
     name: "Start",
+    beforeEnter: (to, from, next) => {
+      const localUsers = localStorage.getItem("uno_users");
+      // if (localUsers) {
+      //   next({ name: "Play" });
+      // }
+      // return store.state.name ? next() : next({ name: "UploadStep2" });
+      return localUsers ? next({ name: "Play" }) : next();
+    },
     component: () => import("./views/GameStart.vue").then((m) => m.default),
   },
   {

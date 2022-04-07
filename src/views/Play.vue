@@ -38,7 +38,8 @@ onMounted(() => {
     router.push({ name: "MainLanding" });
   }
   if (!users.value.length) {
-    JSON.parse(localUsers).forEach((user) => {
+    const players = JSON.parse(localUsers);
+    players?.forEach((user) => {
       store.addUser(user);
     });
   }
