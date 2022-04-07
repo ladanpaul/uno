@@ -45,18 +45,6 @@ onMounted(() => {
   }
 });
 
-const onlyNumber = ($event) => {
-  let keyCode = $event.keyCode || $event.which;
-
-  if (keyCode === 13) {
-    return;
-  }
-
-  if (keyCode < 48 || keyCode > 57) {
-    $event.preventDefault();
-  }
-};
-
 const toggleNewGame = () => {
   newGameRef.value?.toggleDialog();
 };
@@ -87,9 +75,8 @@ const toggleRestartGame = () => {
           {{ user.count }}
         </span>
         <input
-          type="text"
+          type="number"
           class="w-18 ml-auto"
-          @keypress="onlyNumber"
           @change="setCount(user, $event)"
         />
       </div>
