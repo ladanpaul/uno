@@ -18,8 +18,9 @@ defineExpose({ toggleDialog });
   <div
     v-if="isShowDialog"
     class="popup flex absolute top-0 left-0 right-0 bottom-0"
+    @click="toggleDialog"
   >
-    <div class="content flex flex-col m-auto bg-white">
+    <div class="content flex flex-col m-auto bg-white" @click.stop>
       <h3 class="text-3xl text-black-normal">{{ title }}</h3>
       <p class="mt-2 text-xl text-black-normal">Are you shure?</p>
       <div class="mt-8">
