@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
+import type { PlayDialog as Dialog } from "../components";
+import { PlayDialog } from "../components";
 import { useRouter } from "vue-router";
 import { useGame } from "@/stores/useGame";
 import { storeToRefs } from "pinia";
@@ -7,6 +9,9 @@ import { storeToRefs } from "pinia";
 const store = useGame();
 const { users } = storeToRefs(store);
 const router = useRouter();
+
+const newGameRef = ref<InstanceType<typeof Dialog> | null>(null);
+const restartGameRef = ref<InstanceType<typeof Dialog> | null>(null);
 
 const setCount = (user, $event) => {
   store.changeCount(user, Number($event.target.value));
@@ -17,12 +22,14 @@ const setCount = (user, $event) => {
 const newGame = () => {
   store.resetUsers();
   localStorage.removeItem("uno_users");
+  toggleNewGame();
   router.push({ name: "Start" });
 };
 
 const restart = () => {
   store.restart();
   localStorage.setItem("uno_users", JSON.stringify(users.value));
+  toggleRestartGame();
 };
 
 onMounted(() => {
@@ -36,6 +43,26 @@ onMounted(() => {
     });
   }
 });
+
+const onlyNumber = ($event) => {
+  let keyCode = $event.keyCode || $event.which;
+
+  if (keyCode === 13) {
+    return;
+  }
+
+  if (keyCode < 48 || keyCode > 57) {
+    $event.preventDefault();
+  }
+};
+
+const toggleNewGame = () => {
+  newGameRef.value?.toggleDialog();
+};
+
+const toggleRestartGame = () => {
+  restartGameRef.value?.toggleDialog();
+};
 </script>
 <template>
   <div class="m-auto p-8">
@@ -61,16 +88,25 @@ onMounted(() => {
         <input
           type="text"
           class="w-18 ml-auto"
+          @keypress="onlyNumber"
           @change="setCount(user, $event)"
         />
       </div>
-      <div class="mt-8 flex items-center">
-        <button class="btn bg-green text-white" @click="restart">
+      <div class="mt-10 flex items-center">
+        <button class="btn bg-green text-white" @click="toggleRestartGame">
           Restart
         </button>
-        <button class="ml-4 btn bg-yellow" @click="newGame">New Game</button>
+        <button class="ml-4 btn bg-yellow" @click="toggleNewGame">
+          New Game
+        </button>
       </div>
     </div>
+    <PlayDialog ref="newGameRef" @approve="newGame" title="Start new game" />
+    <PlayDialog
+      ref="restartGameRef"
+      @approve="restart"
+      title="Restart this game"
+    />
   </div>
 </template>
 <style lang="scss" scoped>

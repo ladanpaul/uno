@@ -29,7 +29,6 @@ export const useGame = defineStore({
     },
     restart() {
       this.users = this.users.map((user) => ({ name: user.name, count: 0 }));
-      console.log("users -> ", this.users);
     },
     resetUsers() {
       this.users = [];
